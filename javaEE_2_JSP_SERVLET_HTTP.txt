@@ -1,0 +1,266 @@
+﻿一.Servlet
+Servlet的生命周期阶段：实例化，初始化，服务，销毁这几个阶段。
+在Servlet的整个生命周期内，Servlet的构造方法和init()方法只会被调用一次；
+同理Servlet的destroy()也只执行一次。
+但对于客户端的每次访问都会导致Servlet引擎调用一次servlet的service()方法。
+Servlet的实现方式
+1.实现Servlet接口
+2.继承GenericServlet
+3.继承HttpServlet,覆写了service()方法,提供doGet()和doPost()方法;
+web.xml文件配置
+eg:
+	<context-param>
+        <param-name>encoding</param-name> //在init()方法通过ServletConfig可以获取全局配置信息(ServletContext)
+        <param-value>UTF-8</param-value>
+    </context-param>
+
+	<servlet>
+        <servlet-name>testServlet</servlet-name>
+        <servlet-class>cn.com.TestServlet</servlet-class>
+        <init-param>
+            <param-name>encoding</param-name>  //在init()方法通过ServletConfig可以获取
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>testServlet</servlet-name>
+        <url-pattern>/helloServlet</url-pattern>
+    </servlet-mapping>
+说明:
+同一个Servlet可以被映射到多个路径上
+可用*.扩展名的形式配置url-pattern，其中*表示任意字符串
+可用/*配置url-pattern，其中*表示任意字符串；
+
+ServletContext的利用
+获取获取资源路径
+getRealPath(String path),参数path路径一般以/WEB-INF开头
+实现多个Servlet共享数据
+ setAttribute(String name, Object object)//保存数据
+
+HttpServlet的使用
+若要获取客户机提交的数据，只需要处理request对象就行；若要向客户端输出数据，只需要处理response对象即可。
+
+eg:
+//向客户端返回字符流或者字节流
+PrintWriter writer = response.getWriter();
+ServletOutputStream outputStream = response.getOutputStream();
+//设置重定向2种方法
+response.sendRedirect(“http://www.baidu.com“);
+response.setStatus(302); response.setHeader(“location”,”http://www.baidu.com“);
+
+HttpServletRequest的使用
+
+请求重定向与请求转发的区别
+利用response.sendRedirect()实现请求的重定向
+利用request.getRequestDispatcher().forward()实现请求的转发
+重定向时浏览器中的地址栏会发生变化，但是请求转发时浏览器中地址栏不会发生改变。从本质上来讲：重定向是两次不同的请求，而请求转发只向服务端的发送了一次请求由服务端的内部实现请求的跳转。
+重定向可以跳转到应用的外部，而转发的范围只能是应用的内部
+请求转发可利用request.setAttribute()将数据传递到下一个Servlet且下一个Servlet可用request.getAttribute()取出数据；但是重定向不可以也没有道理这么做。至于为什么，请参考第一点。
+
+ 二.HTTP
+ HTTP请求由三部分组成：请求消息行、请求消息头、请求消息体
+ HTTP响应由三部分组成：响应消息行、响应消息头、响应消息体
+
+ 1.Cookie//属于客户端技术
+ eg:
+ httpServletResponse.addCookie()
+ httpServletRequest.getCookies()
+ 2.HttpSession//属于服务器端技术
+ eg:
+ a.HttpSession对象由服务器创建
+ request.getSession()//解析该方法如下
+（1、获取名称为JSESSIONID的Cookie的值
+（2、如果没有获取到该Cookie那么就创建一个新的HttpSession且为其分配一个唯一的SessionID并且立马为浏览器生成一个名字为JSESSIONID值为sessionID的Cookie
+（3、如果可以获取到该Cookie，则取出该cookie的值(即HttpSession对象的SessionID)，再依据此SessionID从服务器中找到与其对应的HttpSession
+所以HttpSession是依赖于Cookie的
+ b.在同一个会话下多个Servlet可共享数据
+ eg:与ServletContext的不同,httpsession只针对当前用户.
+ c.Cookie只能存字符串但是HttpSession可以存对象.HttpSession是依赖于Cookie的.
+
+ 特殊情况:应对浏览器禁用Cookie的情况
+解决方案:利用response.encodeURL( )方法对网站的所有URL进行重写
+
+执行request.getSession( )
+对sendRedirect( )涉及到的url地址进行重写
+对表单的action和超链接的url进行重写
+
+三.JSP
+a.JSP介绍
+小结四个域对象：
+PageContext : 它所存放的数据在当前页面有效，开发时使用较少 
+ServletRequest: 它所存放的数据在一次请求(转发)内有效 
+HttpSession: 它存放的数据在一次会话中有效，使用较多 
+ServletContext: 它所存放的数据在整个应用范围内都有效，但是因为其有效范围太大不利于数据隔离，应尽量少用
+
+b.JSP最佳实践
+Servlet负责业务逻辑
+JSP负责数据的显示
+
+c.JSP语法
+1.可以利用<% %>形式在JSP文件中编写脚本
+eg:
+<%
+    Date date=new Date();
+    out.println(date.toLocaleString());
+%>
+2.利用<%= %>实现输出
+eg:
+<%= 9527+45 %>      等价于out.print(9527+45);
+3.利用<%! %>        表示在类中定义全局成员和静态块
+4.利用<%– 这是JSP注释 –%>       添加JSP注释
+
+d.JSP指令
+page指令
+eg:
+<%@ page language=”java” import=”java.util.*” pageEncoding=”UTF-8”%>
+
+常用的属性:
+session: 是否自动创建session对象，默认值是true
+errorPage: 假若页面中有错误跳转到指定的资源
+isErrorPage: 是否创建throwable对象，默认是false
+contextType: 设置内容类型，等同于response.setContextType()
+pageEncoding: 告知JSP引擎用什么编码翻译该jsp文件
+isELIgnored: 是否支持EL表达式，默认是false
+
+include指令
+eg:
+<%@ include file="xxxxxx.jsp" %>
+eg:
+<jsp:include page="xxxxxx.jsp"></jsp:include>
+静态包含：在JSP转义时把两个文件合并 
+动态包含：在JSP转义时不会合并文件当代码执行到include时才包含另一个文件的内容 
+使用原则：尽量多采用静态包含
+
+taglib指令
+用于在JSP页面中导入JSTL标签库
+eg:
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+e.JSP的动作
+<jsp:include> 
+用于动态地把其它资源包含到当前页面中
+<jsp:forward> 
+用于请求转发
+<jsp:param> 
+用于请求转发时携带参数
+eg:
+<jsp:forward page="/test.jsp">
+<jsp:param value="rose" name="name" />
+<jsp:param value="23" name="age" />
+</jsp:forward>
+
+<jsp:useBean> 
+创建一个对象
+<jsp:setProperty> 
+给对象的属性赋值
+<jsp:getProperty> 
+取出对象的属性值
+eg:
+<jsp:useBean id="p" class="cn.com.Person"/>
+<jsp:setProperty property="name" name="p" value="武疼兰"/>
+<jsp:getProperty property="name" name="p"/>
+
+f.EL表达式和JSTL
+EL表达式JSP中获取数据的一种规范
+语法:
+语法格式：${ }
+
+JSTL
+<%@ taglib uri=”http://java.sun.com/jsp/jstl/core” prefix=”c” %>
+利用taglib指令设置JSTL的路径和前缀名
+导入包jstl.jar和standard.jar
+
+JSTL常用标签
+<c:set>标签 
+用于设置各种域中的属性
+
+<c:out>标签 
+用于输出一段文本内容到客户端浏览器
+
+<c:remove>标签 
+用于删除各种域中的属性
+
+eg:
+	<!-- 测试set、remove、out -->
+    <c:set var="number" value="9527" scope="session"/>
+    number=<c:out value="${number}"/>
+    <c:remove var="number" scope="session"/>
+    number=<c:out value="${number}" default="没有取到number的值"/>
+
+<c:if>标签 
+用于条件判断
+eg:
+ 	<!-- 测试if -->
+    <c:if test="${9527>1234}">
+       zxx number is 9527
+    </c:if>
+
+<c:choose>标签 
+该标签非常类似于Java中的switch语句，用于多个条件选择。它必须与<c:when>和<c:otherwise>一起使用
+eg:
+	<!-- 测试choose -->
+    <c:set var="size" value="${3}"></c:set>
+    <c:choose>
+        <c:when test="${size==1 }">The size is 1</c:when>
+        <c:when test="${size==2 }">The size is 2</c:when>
+        <c:when test="${size==3 }">The size is 3</c:when>
+        <c:otherwise>
+            The size is other
+        </c:otherwise>
+    </c:choose>
+
+<c:forEach>标签 
+用于对集合对象进行循环迭代操作
+eg:
+	<!-- 测试forEach -->
+    <c:forEach var="i" begin="1" end="20" step="3"> 
+        ${i}<br/>
+    </c:forEach>
+
+四.Listener
+监听域对象的创建与销毁
+在此涉及到三个监听器ServletContextListener、HttpSessionListener以及ServletRequestListener。
+监听域对象的属性变化
+在此涉及到三个监听器ServletContextAttributeListener、HttpSessionAttributeListener以及ServletRequestAttributeListener。
+监听session对JavaBean的绑定和解绑
+利用HttpSessionBindingListener监听session对JavaBean的绑定和解绑
+
+五.Filter
+a.在Servlet被调用之前检查或者修改Request、Request Header、Request中的内容；在Servlet被调用之后检查或者修改Response、Response Header和Response中的内容
+实现Filter接口
+Filter的配置方式和Servlet非常类似
+Filter配置详解
+eg:
+<filter>
+    <filter-name>filter名称</filter-name>
+    <filter-class>filter类全名</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>filter名称</filter-name>
+    <url-pattern>映射路径</url-pattern>
+    <servlet-name>Servlet名次</servlet-name>
+    <dispatcher></dispatcher>
+</filter-mapping>
+关于<url-pattern>的配置
+1、完全匹配 
+必须以”/”开始. 
+2、目录匹配 
+必须以”/”开始，以*结束. 
+3、扩展名匹配 
+以*.xxx结束.
+关于<servlet-name>的配置
+可在<filter-mapping>中利用<servlet-name>对servlet进行过滤配置。即用<servlet-name>设置当前Filter拦截哪一个servlet
+关于<dispatcher>的配置
+可在<filter-mapping>中利用<dispatcher>设置Web资源以什么方式被Servlet容器调用时Filter才进行拦截。<dispatcher>的取值有：REQUEST、FORWARD、ERROR、INCLUDE
+
+b.FilterConfig
+类似ServletConfig
+FilterConfig的常用方法:
+eg:
+getFilterName( ) getInitParameter(String name)
+getInitParameterNames( ) getServletContext()
+
+C.HttpServletRequestWrapper
+继承HttpServletRequestWrapper实现自己的HttpServletRequest
+

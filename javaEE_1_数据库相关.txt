@@ -1,0 +1,133 @@
+﻿一.MySql.
+Chap1-DQL:
+1.条件查询:
+=、!=、<、<=、>、>=
+BETWEEN…AND
+IN(value1,value2,….valueN)
+NOT IN(value1,value2,….valueN)
+IS NULL
+IS NOT NULL
+AND
+OR
+NOT
+2.模糊查询:
+关键字 LIKE
+通配符 _ 表示任意一个字符
+通配符 % 表示任意0—N个字符
+eg: SELECT * FROM student WHERE sname LIKE “_i%”;
+3.字段查询:
+DISTINCT 去除重复记录 eg: SELECT DISTINCT job FROM student;
+IFNULL 把NULL转换成数值0 eg: SELECT IFNULL(money,0) FROM student;
+关键字 AS 给列名添加别名 eg: SELECT name AS username FROM student;
+4.聚合函数
+COUNT( )：统计指定列其值不为NULL的记录行数
+MAX( )：计算指定列的最大值，如果指定列是字符串类型则使用字符串排序运算
+MIN( )：计算指定列的最小值，如果指定列是字符串类型则使用字符串排序运算
+SUM( )：计算指定列的数值和，如果指定列类型不是数值类型则计算结果为0
+AVG( )：计算指定列的平均值，如果指定列类型不是数值类型则计算结果为0
+5.分组查询
+当分组查询时需使用GROUP BY子；例如，查询每个部门的工资总和，此时需用部门来进行分组
+在mysql中使用SQL时，如果某列名和聚合函数同时出现在了SELECT与FROM之间，那么该列名一定要写在group by 之后。
+6.HAVING子句
+HAVING子句用于在GROUP BY分组之后对数据再次筛选。
+7.排序
+ORDER BY 列名 ASC 升序: eg: SELECT * FROM student ORDER BY age ASC;
+ORDER BY 列名 DESC
+8.LIMIT
+LIMIT用来限定查询结果的起始行和总行数，常用于分页。eg: SELECT * FROM STUDENT LIMIT 2,5;
+
+查询语句的书写顺序： 
+select – from – where – group by – having – order by – limit
+
+查询语句的执行顺序： 
+from – where – group by – having - select - order by – limit
+
+Chap2-数据的完整性
+a.实体完整性
+主键约束 (primary key)
+唯一约束 (unique)
+自动增长列 (auto_increment)
+
+b.域完整性
+数据类型 
+非空约束(NOT NULL) 
+默认值约束(DEFAULT) 
+check约束(MySql不支持,Oraclez支持)
+eg:
+CREATE TABLE student(
+	id  primary key auto_increment,
+	name varchar(15) NOT NULL UNIQUE,
+	gender char(5) DEFAULT '男'
+);
+
+c.引用完整性
+设值外键
+CONSTRAINT fk_score_studentid FOREIGN KEY (studentid) REFERENCES student(id)
+
+多表查询
+
+A.合并结果集
+SELECT * FROM table1 关键字 SELECT * FROM table2
+被合并的两个结果它们的列数、列类型必须相同！
+UNION 关键字去除结果集中的重复记录
+UNION ALL 关键字则不会去除结果集中的重复记录
+B.连接查询
+内连接
+SELECT…FROM table1 INNER JOIN table2 ON…WHERE…;
+INNER JOIN 可简写为JOIN
+ON 专门用于主键和外键的匹配
+eg:	SELECT s.studentid,s.studentname,r.scoreid,r.score 
+	FROM student s INNER JOIN report r 
+	ON s.studentid=r.studentid WHERE r.score>70;
+外连接
+左外:SELECT… FROM table1 LEFT OUTER JOIN table2 ON…;
+左外连接参照的是LEFT OUTER左边的表,无论右边表是否为null
+右外:SELECT… FROM table1 RIGHT OUTER JOIN table2 ON…;
+同理右外;
+
+自然连接(效果同内连接)
+SELECT …. FROM table1 NATURAL JOIN table2;
+使用自然连接有一个非常重要的前提条件：需要两张表中有一列(通常是主表的主键和子表的外键)的名称和类型完全一致！
+
+子查询与自连接
+
+Chap4-数据库的备份与恢复
+脚本文本中只包含数据库的内容，而不存在创建数据库的语句！所以在恢复数据时需要自已手动创建一个数据库，然后再去恢复数据
+备份
+mysqldump –u用户名 –p密码 数据库名>生成的脚本文件路径
+恢复
+source 数据库脚本文件路径
+
+二.JDBC与Tomcat
+JDBC的核心技术点：
+DriverManager:用于加载驱动
+Connection: 用于创建与数据库的连接
+Statement: 用于操作sql语句
+ResultSet: 结果集或一张虚拟表
+
+三.事务
+事务隔离级别:
+1、READ UNCOMMITTED 
+赃读、不可重复读、虚读都有可能发生。
+2、READ COMMITTED 
+可避免赃读；但是不可重复读、虚读都有可能发生
+3、REPEATABLE READ 
+避免赃读、不可重复读；但是虚读有可能发生。
+4、SERIALIZABLE 
+可避免赃读、不可重复读以及虚读。
+
+关于数据库的事务级别，请注意：
+事务级别越高那么数据操作越安全但是操作性能越低
+在MySQL中可利用SELECT @@TX_ISOLATION查看当前的事务隔离级别
+在MySQL中可利用SET TRANSACTION ISOLATION LEVEL XXXXX 更改事务隔离级别
+应在开启事务之前设置隔离级别
+
+JDBC中控制事务以及操作事务
+利用connection.setTransactionIsolation(int level)设置隔离级别
+利用connection.setAutoCommit(false)开启事务
+利用connection.commit( )提交事务
+利用connection.rollback( )回滚事务
+
+数据库连接池:
+常用连接池.DBCP和C3P0
+DBUtils是Apache提供的一个开源的数据库操作工具.

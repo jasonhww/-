@@ -1,0 +1,490 @@
+﻿OC程序运行过程编译（.m至.o）、链接(.o至.out)、执行.
+类与类之间的关系:组合(类中的普通成员)、依赖(类中的指针成员)、关联(方法中的参数).
+@符号 OC字符串
+NSLog 日志打印
+#import 引入头文件
+@class 当两个类互相引用的时,
+.h文件中用@class方式,不采用#import方式.在.m文件中再引入对方.h文件
+
+
+数据类型支持C中所有类型
+新增：
+Bool 类型 yes、no（1、0）
+Boolean同java.
+nil 与NULL差不多 c指针用NULL OC类指针用nil
+class 类型 类对象(后面详细)
+SEL 方法选择器(后面详细)
+id 类型 万能指针(后面详细)
+
+
+block 代码段
+
+一.NSString相关 
+默认值为OC的nil
+常用的类方法：
+	
+//C语言字符串转换成OC字符串
+stringWithFormat
+//拼接字符串
+
+常用的对象方法:
+length //得到字符串长度
+characterAtIndex //得到字符串中指定的字符
+isEqualToString //判断两个字符串是否相同
+compare //比较两个字符串大小 -1小于,0等于,1大于.
+
+
+
+
+
+1.类的定义
+声明(.h文件中)
+@interface 类名：父类名
+{
+	//定义变量 属性要以_下划线开头(*_或者_)
+	//数据类型 变量名；
+	@public
+	NSString *_name;
+	int _age;
+	float _height;
+}
+//方法的声明
+- (void)run;
+- (int)sumWith:(int)num1 :(int)num2;
+@end
+
+实现(.m文件中)
+@implementation 类名
+
+//方法的实现
+- (void)run
+{
+	NSLog(@"我是无参的方法实现内容");	
+}
+
+- (int)sumWith:(int)num1 :(int)num2
+{
+	int num3 = num1 + num2;
+	return num3;
+}
+@end
+
+2.类的对象创建
+语法:
+类名 *对象名 = [类名 new];
+Person *p1 = [Person new];
+完全等价于
+Person *p1 = [[Person alloc] init]
+
+创建对象完整步骤原理:
+先调用alloc类方法创建一个对象,
+然后再使用init对象方法初始化这个对象.
+
+构造方法init:
+重写init
+规范:
+- (instancetype)init
+{
+	self =[super init];//必须调用父类的init方法.
+	if(self != nil){//如果不为nil说明初始化成功
+		//初始化当前类的属性
+	}
+	return self;
+}
+自定义init方法
+规范:
+返回值必须为instancetype
+构造方法名称必须以initWith开头
+方法的实现和init的要求一样
+
+
+3.访问对象的属性
+语法:
+推荐方式一
+方式一: 对象名->属性名 = 属性值;
+		对象名->属性名
+		p1->_name = @"jason";
+
+方式二:	(*对象名).属性名；
+		(*p1)._name
+
+4.方法相关
+a.方法的声明和实现
+语法:
+- (返回值类型)方法名称;
+- (返回值类型)方法名称:(参数类型)参数名称；
+- (返回值类型)方法名称:(参数类型)参数名称1 :(参数类型)参数名称2;
+- (void)run;
+- (void)eatWith:(NSString *)foodName;
+- (int)sum:(int)num1 :(int)num2;
+//其他增强可读性的写法,加上 "xxxWith" 与 "and".
+- (int)sumWithNum1:(int)num1 andNum2:(int)num2;
+
+
+b.方法的调用
+语法:
+[对象名 方法名];
+[对象名 方法名:参数内容];
+[对象名 方法名:实参1 :实参2];
+[p1 run];
+[p1 eat:@"食物内容"];
+[p1 sum:10 :15];
+//其他增强可读性的写法
+[p1 sumWith:10 and:15];
+
+注意:
+p1指针如果为nil,访问属性会报错.访问方法不会报错,方法不执行.
+如果不为nil,访问只声明未实现会报错
+
+
+5.异常的基本使用
+语法:
+@try
+{
+	
+}
+@catch(NSException *ex)
+{
+	NSLog(@"异常---------%@",ex);
+}
+@finally{
+	
+}
+
+6.类方法(类似java的静态方法)
+语法:
++ (返回值类型)方法名称;
+与对象方法符号不同,其余相同.
+调用：
+[类名 类方法名] //只能通过类名来调用，不能使用对象,(待验证与java不同)
+
+特点:
+a.类方法不能直接访问属性和对象方法.
+b.对象方法可以访问类方法.
+
+规范:
+a.要求提供与构造方法相同的类方法,来创建一个对象.
+b.要求在类方法里面该对象autorelease过了.
+
+注意:
+对象方法不能重名.
+类方法不能重名.
+对象方法和类方法可以重名.
+
+7.关键字
+7-1).static 
+a.不能修饰属性和方法
+b.可以修饰方法中的局部变量
+	加了后为静态变量,不会回收,下次继续使用.
+c.如果方法的返回值是当前类的对象，那么方法的返回值就写instancetype
+
+7-2)self
+是1个指针.在对象方法中指向当前对象.在类方法中指向当前类.
+
+7-3)super
+调父类方法.
+在对象方法中,可以调用当前对象从父类继承过来的对象方法.
+在类方法中,可以调用当前类从父类继承过来的类方法.
+
+8.访问修饰符
+@publick 任意地方
+@private 本类
+@protected 本类和本类子类
+@package 当前框架中
+不指定 默认@protectd
+作用域:
+从上往下直到遇到下一个修饰符.
+真正私有属性和方法:
+私有属性：
+将属性写实现中.(唯一的区别外面不提示)
+私有方法:
+不写声明只写实现.(只能本类中调用,不能外界调用)
+
+9.封装、继承、多态.
+封装 如低耦合,高内聚,单一原则.GetSet方法.
+继承 继承是类在继承,而不是对象在继承.
+多态 向上转型/方法重写(父类的引用指向之类对象,调用的是子类重写的方法)
+
+10.description方法(相当于Java中的ToString)
+NSLog(@"%@",p1);//先调用p1.description方法.
+
+
+OC特有的语法:
+1.结构体
+typedef struct{
+	//定义属性
+	int year;
+	int month;
+	int day;
+}结构体名称;
+
+结构体和类相同点:
+都可以将多个数据封为1个整体.
+不同点:
+结构体只能封装属性,而类可以封装属性和方法.
+应用场景:
+只有属性并且,属性较少适合.
+
+
+2.类对象(Class对象)
+该类包含三个属性.1.NSString 存类名 2.数组 存所有的属性 3. SEL 存方法 
+a.获取方法
+类的class方法.
+对象的class方法.
+b.注意:
+声明Class指针的时候,不需要加*因为在typedef的适合已经加了*.
+c.如何使用:
+拿到存储类的类对象.
+Class c1 = [Person class];
+c1 完全等价于 Person类.只调用类方法.
+Pesrson *p1 = [Person new];
+Class c2 = [p1 class];
+
+3.SEL(selector 选择器)
+SEL是是1个类,SEL对象是用来存储1个方法的.
+a.获取方法:
+SEL s1 = @selector(方法名);//得到SEL消息
+Persion *p1 = [Person new];
+[p1 performSelector:s1] //发送SEL消息
+完全等价于 [p1 方法名];
+
+b.注意(同理与类对象注意):
+c.原理:
+(栈)指针变量先拿到SEL对象(SEL消息)-(堆)发送到指针对象(根据isa指针)-class(类)对象
+
+
+
+4.点语法(与java类似,原理不同)慎用
+原理:编译时,将点语法转换为调用setter或getter方法.
+p1.age = 18; 完全等价于 [p1 setAge:18];
+p1.age; 完全等价于 [p1 age];
+setter/getter方法内部慎用.
+
+----------------------过时开始a-------------------------------------------------
+5.@property(自动生成getter/setter方法的声明).
+a.语法:
+声明中
+@property 数据类型 名称;
+@property int age;
+b.注意:
+数据类型和属性一致 名称和属性名称一致(去掉下划线)
+
+6.@synthesize(自动生成getter/setter方法的实现).
+A.语法:
+实现中
+@synthesize @property时的名称;
+@synthesize age;
+
+原理:
+a.生成1个真私有的属性(非原_age属性),类型和名称@property一致.
+b.实现了setter方法,将参数直接赋值给那个私有属性,无任何逻辑验证(如果需要进行重写).
+c.实现了getter方法,将生成的私有属性的值返回.
+
+B.希望@synthrsize不要去自动生成私有属性,
+让getter/setter的实现中直接操作自己定义的属性.
+语法:
+实现中
+@synthesize @property时的名称 = 原属性名称;
+@synthesize age = _age;
+
+批量生成语法:
+@property age. height;
+@synthesize age = _age, height = _height;
+----------------------过时结束a-------------------------------------------------
+
+7.@property的增强(生成私有属性(属性名自动加上下划线),和getter setter的声明和实现)
+5-6点为Xcode4.4之前,Xcode4.4以后增强
+
+语法:
+@property 数据类型 名称;
+@property int age;
+注意:
+A.@property的类型和属性的类型一致.
+名称和属性名称一致,只要去掉下划线.
+B.实现的方法无任何逻辑验证(如果需要进行重写).如果两个都重写了,自己定义属性.
+
+@property的参数
+语法:
+@property(参数1,参数2,,参数3....) 数据类型 名称;
+@property的参数包含四组
+第一组-与多线相关的两个参数.
+atomic(默认值)、nonatomic
+atomic:写上,加上线程安全锁.
+nonatomic:反之.
+
+第二组-与生成的setter方法的实现相关的参数.
+assign(默认值)、retain.
+assign：生成的setter方法的实现就是直接赋值
+retain：反之,标准的MRC内存管理代码.(MRC机制下)
+特殊情况:MRC机制下,当两个类相互引用时,1端使用retain,另外1端使用assign.
+千万注意:
+retain还是需要自己去重写dealloc方法去手动release.
+
+第五组-指定强/弱指针类型(ARC机制下).
+strong(默认值)、weak.
+只适用于OC对象
+特殊情况:ARC机制下当两个类相互引用时,1端使用strong,另外1端使用weak.
+
+第三组-与生成只读、读写的封装
+readwrite(默认值)、readonly
+readwrite:同时生成setter、getter方法.
+readonly:只会生成getter方法.
+
+第四组-可以指定默认生成的getter、setter方法名字
+getter、setter
+示例:@property(getter=xxx,setter=ooo:)
+
+
+
+
+8.静态类型和动态类型
+静态:指的是1个指针指向的对象是本类的对象.反之,动态.
+编译检查:(能不能调用对象的方法看指针类型)
+编译器咋编译时，能不能通过1个指针去调用指针指向的对象的方法.
+判断原则:看指针所属的类型之中是否有这个方法,如果有就任务可以调用,编译通过.反之,没有报错.
+运行检查:(能不能调用对象的方法看对象类型)
+
+动态类型进行检测:
+1.)判断对象是否含有指定对象方法(最常用)
+- (BOOL) respondsToSelector:(SEL)aSelector;
+   判断类是否含有指定类方法(最常用)
+- (BOOL) instancesRespondToSelector:(SEL)aSelector;
+2.)判断对象是否为 指定类的对象或子类对象
+- (BOOL) isKindOfClass:(Class)aClass;
+BOOL b1 = [s1 isKindOfClass:[Person class]]
+3.)判断对象是否为 指定类的对象
+- (BOOL) isMemberOfClass:(Class)aClass;
+4.)判断类是否为 另外一个类的子类
++ (BOOL) isSubclassOfClass:(Class)aClass;
+
+9.NSObject和id
+NSObject是个万能指针.
+id是个万能指针.使用点语法会报错.
+声明id指针的时候,不需要加*因为在typedef的适合已经加了*.
+不同点:
+NSObject指针 会做编译检查
+id指针 不会做编译检查
+
+10.instancetype 返回值为当前类的对象
+只能作为方法的返回值.
+
+
+内存管理:
+栈:基本类型和对象的引用(指针). 执行完毕后,会立即回收.
+堆:对象本身和数组.
+静态区(BSS段):未初始化的全局变量、和静态变量.一旦初始化就回收,并转存到常量区.
+常量区(数据段):已经初始化的全局变量、静态变量.程序结束的时候才回收.
+代码段:用来存储代码.程序结束时回收.
+
+内存泄露:
+	当一个该回收的对象,没有及时回收,常驻于内存直到程序结束.
+
+MRC:手动引用计数.
+ARC:自动引用计数(Xcode4.2开始支持,IOS5).
+
+----------------------过时开始b-------------------------------------------------
+
+1).引用计数器
+a).每1个对象都有1个属性，叫做retainCount.类型是unsigned long。
+作用是用来记录当前这个对象有多少个人在使用它.
+默认情况下,创建1个对象出来,这个对象的值默认为1.
+
+b).多1个人使用+1,少1个人使用-1,等于0,系统自动回收回调dealloc方法.
+使用方法:
+为对象发送1条retain消息+1.
+发送1条release消息-1.
+发送1条retainCount消息,获取值.
+
+2).野指针和僵尸对象.
+野指针:
+C:定义一个指针变量,没有初始化.
+OC:指针指向的对象已经被回收了.
+僵尸对象:
+1个已经被释放的对象,但是这个对象所占的空间还没有分配给别人,这样的对象叫做僵尸对象.
+我们通过野指针访问僵尸对象时,(占用空间还没分配)可能有问题或者没问题.
+所以将野指针赋值为nil,可以防止僵尸对象可用.
+
+3).MRC 
+	重写dealloc的规范:
+	必须在代码最后一句调用父类的dealloc方法.
+
+单个对象内存管理
+a).有对象的创建 就必须匹配1个relese
+b).retain次数和release次数一定要匹配
+c).只有在指针为野指针的时候才赋值为nil
+4).在方法中不要随意的为传入的对象retain
+
+多个对象内存管理(@property建参数说明):
+setter方法当属性是一个OC对象时,传入当前属性+1,当前对象销毁时该属性对象-1;
+当为对象的这个属性多次赋值还是会发生内存泄露,
+改进应该relase旧的,retain新的.
+当新旧对象为同一对象还是会发生僵尸对象错误.
+改进什么事都不做.
+代码示例:
+- (void)setCar:(Car *)car{
+	if(_car != car){//当新旧对象不为同一对象时
+		[_car release] 
+		_car =[car retain]
+	}
+	
+}
+
+- (void)dealloc{
+	[_car release]
+	[super dealloc]
+}
+
+3.)自动释放池.
+将对象放入该池中,当前自动释放池中销毁时,会调用池中所有对象的release方法(仅仅是发送Release消息).
+放入语法:
+@autoreleasepool{
+	Person *p1 = [Person new autorelease];//autorelease一定要在大括号里面.
+}
+
+----------------------过时结束b-------------------------------------------------
+
+5.)ARC机制
+强指针(默认):__Strong Person *p1 = [Person new];
+弱指针:__weak Person *p1 = [Person new];
+如果一个对象没有任何类型的抢指针指向这个对象,对象就会被立即释放.
+
+单个对象内存管理(总结就是上语句):
+a.)当指向对象的所有都被回收的时候,就会立即回收
+b.)将所有指向对象的强指针赋值为nil时,就会立即回收.
+
+多个对象内存管理(@property建参数说明)：
+a).@property参数retain不能使用.
+
+
+ARC与MRC相互兼容:
+Xcode-buildPhases-指定MRC的m文件compiler flags为-fno-obj-arc.
+MRC转换位ARC:Edit-convert-TO-obj-arc.
+
+6).分类category:(.h与.m为组成一个模块)将一个类分成多个模块.
+语法:也包含声明和实现。
+@interface 本类名 (分类名)
+
+@end
+
+@implemetaion 本类名 (分类名)
+
+@end
+使用:注意引入分类的头文件
+
+注意事项：
+a).分类只能增加方法,不能增加属性.
+b).使用@property不会生成真私有属性和方法实现.
+c).本类中真私有属性在分类中无法访问.但可调用getter/setter方法访问.
+d).分类中具有同名的方法,优先调用最后编译的.
+
+非正式协议(别名"为系统类写分类")
+
+ARC和JAVAL的GC机制区别:
+GC:程序运行期间,垃圾回收器,不断扫描堆中的对象是否无人使用.
+ARC:编译时,就适当插入retain/release.
+
+
+
+
+
+

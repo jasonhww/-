@@ -1,0 +1,38 @@
+﻿一.HTML标签
+单标签
+<br> 换行标签
+<hr> 横线标签
+双标签
+<p> 段落标签
+<h1> 标题标签
+<font> 文本标签
+<strong>和<b> 文本加粗标签
+<em>和<i> 文本斜体标签标签
+<del>和<s> 文本删除线标签
+<ins>和<u> 文本下划线标签
+<img> 图片 eg: <img src="girl.jpg" title="鼠标放到图片上时显示的文字" alt="图盘无法正常显示时对图片的描述" width="200" height="300">
+<a> 超链接  href的属性值为#去除标签的跳转 eg: <a href="http://www.baidu.com" title="百度提下" target="_self">百度一下，你就知道</a> 
+<ul> 无序列表标签 	eg: <ul type="circle"> 
+            			<li>HTML</li>
+        				</ul>
+<ol> 有序列表标签	eg:	<ol type="1" start="1">
+            			<li>故意制造邂逅</li>
+        				</ol>   
+<dl> 自定义列表标签	eg:	<dl>
+            			<dt>小标题</dt>
+            			<dd>列表项1</dd>
+            			<dd>列表项2</dd>
+        				</dl>
+<embed> 嵌入标签	eg: <embed src="song.mp3" hidden ="true"/>
+<marquee> 滚动标签	eg: <marquee behavior="slide" direction="up" 
+                 		width="500" height="500" bgcolor="pink"> 
+          				<img src="girl.jpg">
+        				</marquee>
+<meta> 元信息标签	ex:	在HTML中可以在<head> </head>标签中利用<meta> 标签来表示与页面有关的元信息。
+					eg:	<meta charset="utf-8" > 
+        				<meta name="keywords"       content="Java,Android,Html,CC,JS">
+        				<meta name="description"    content="这是我的技术博客">
+       					<meta http-equiv="refresh"  content="5;url=http://www.baidu.com">
+<link> 链接标签		ex:	在HTML中可以在<head> </head>标签中利用<link>标签来用于链接外部css文件和收藏夹图标(favicon.ico)
+					eg: <link rel="icon"  href="sina.ico">
+						<link rel="stylesheet"   href="test.css">

@@ -1,0 +1,57 @@
+﻿一.MVC
+Javabean用于封装数据和处理数据
+Servlet负责接收请求和控制程序流转
+JSP负责展示数据
+常用的分包方式：
+cn.com.domain 实体 
+cn.com.service 业务接口 
+cn.com.service.impl 业务接口的实现 
+cn.com.dao 数据访问接口 
+cn.com.dao.impl 数据访问接口的实现 
+cn.com.servlet 接收请求和控制程序流转
+
+二.AJAX
+XMLHttpRequest的常用方法
+open(method,url,async) 
+建立与服务器的连接
+send(string) 
+将请求发送到服务器
+
+XMLHttpRequest的常用属性
+1.readyState 
+用于标识XMLHttpRequest的状态信息
+readyState=0表示XMLHttpRequest对象未完成初始化，即刚创建。
+
+readyState=1表示XMLHttpRequest对象开始发送请求；即调用了open方法，但还没有调用send方法，请求还没有发出
+
+readyState=2表示XMLHttpRequest对象的请求发送完成；即send方法已经调用，数据已经提交到服务器，但没有收到任何响应
+
+readyState=3表示XMLHttpRequest对象开始读取响应，还没有结束；即收到了响应消息头，但响应正文还没有收到
+
+readyState=4表示XMLHttpRequest对象读取响应结束，响应消息头和响应正文都已收到
+2.responseText
+获得响应的文本内容
+3.responseXML
+获得响应的XML文档对象
+4.status
+用于标识Http请求的响应状态码
+XMLHttpRequest的回调函数
+每当readyState属性值改变时onreadystatechange函数就会被执行。
+
+三.文件上传
+Commons-fileupload是Apache提供的一个用来处理表单文件上传的一个开源组件。该组件操作简单、API通俗易懂、性能优异。
+导入commons-fileupload、commons-io包
+
+四.文件下载
+
+四.静态代理与动态代理
+动态代理与静态模式的原理是一样的,只是它没有具体的代理类而是通过Proxy在JVM运行时利用反射动态地生成了一个代理。
+请注意Proxy.newProxyInstance(ClassLoader loader,Class<?>[] interfaces,InvocationHandler h)方法的三个参数 
+ClassLoader：类加载器，传入和被代理类使用的相同的类加载器即可
+Class<?>[] interface：代理类要实现的接口，传入和被代理类使用的相同的接口即可
+InvocationHandler h：当通过代理对象调用一个方法的时候，该方法的调用会被转发至InvocationHandler接口的invoke()方法来执行具体的调用
+请注意invoke(Object proxy, Method method, Object[] args)方法的三个参数 
+Object proxy：代理对象的引用
+Method method：当前调用的方法
+Object[] args：当前调用的方法的输入参数
+
