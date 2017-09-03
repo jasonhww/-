@@ -1,0 +1,24 @@
+﻿MyBatis:官网学习地址(http://www.mybatis.org/mybatis-3/zh/index.html)
+简介概述:
+MyBatis是一个优秀的持久层框架，它对JDBC操作数据库的过程进行了封装，使开发者只需要关注SQL本身。
+可以使用简单的XML或注解来配置和映射原生信息，将接口和 Java 的 POJOs(Plain Old Java Objects,普通的 Java对象)映射成数据库中的记录。
+
+
+SqlMapConfig.xml
+常用标签配置
+properties //我们可将一些配置信息专门写在对应的配置文件中，然后在SqlMapConfig.xml引用即可
+settings  //利用setting配置全局参数从而作用于MyBatis的行为
+typeAliases //typeAliases可为Java类型设置一个别名从而减少类完全限定名的冗余
+typeHandlers //MyBatis中通过typeHandlers完成JDBC类型和Java类型的转换
+objectFactory
+plugins
+environments
+    environment
+        transactionManager
+        dataSource
+mappers //mappers用于配置SQL映射文件
+
+MyBatis输入映射parameterType
+parameterType对sql的输入参数进行定义，参数的类型可以是：基本类型、HashMap、pojo。
+MyBatis输出映射resultType以及resultMap
+esultType对sql的输出参数进行定义，参数的类型可以是：基本类型、HashMap、pojo.
