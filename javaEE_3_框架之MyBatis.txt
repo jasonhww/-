@@ -2,7 +2,7 @@
 简介概述:
 MyBatis是一个优秀的持久层框架，它对JDBC操作数据库的过程进行了封装，使开发者只需要关注SQL本身。
 可以使用简单的XML或注解来配置和映射原生信息，将接口和 Java 的 POJOs(Plain Old Java Objects,普通的 Java对象)映射成数据库中的记录。
-
+SqlMapConfig.xml-SqlSessionFactory-SqlSession-Executor-(输入参数)MappedStatemend(输出参数)
 
 SqlMapConfig.xml
 常用标签配置
@@ -18,7 +18,27 @@ environments
         dataSource
 mappers //mappers用于配置SQL映射文件
 
-MyBatis输入映射parameterType
+A.MyBatis输入映射parameterType
 parameterType对sql的输入参数进行定义，参数的类型可以是：基本类型、HashMap、pojo。
-MyBatis输出映射resultType以及resultMap
-esultType对sql的输出参数进行定义，参数的类型可以是：基本类型、HashMap、pojo.
+HashMap：在sql语句中从hashmap中取出对应key所对应的值.
+
+B.MyBatis输出映射resultType以及resultMap
+resultType对sql的输出参数进行定义，参数的类型可以是：基本类型、HashMap、pojo.
+HaspMap:将输出的字段名称作为map的key，value为字段值
+pojo:
+注意:使用resultType进行输出映射时务必将查询的列名与pojo中的属性名保持一致！如果要求不一致，则可以使用resultMap.
+resultMap:
+eg:
+<resultMap type="cn.com._Student" id="studentResultMap">
+    <id column="id" property="_id" />
+    <result column="name" property="_name" />
+    <result column="gender" property="_gender" />
+    <result column="birthday" property="_birthday" />
+</resultMap>
+<select id="_selectStudentByID" parameterType="int" resultMap="studentResultMap">
+       SELECT * from student where id=#{value}
+</select>
+
+MyBatis的动态Sql
+where和if
+<foreach>标签来拼装
