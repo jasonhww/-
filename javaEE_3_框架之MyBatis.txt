@@ -1,10 +1,18 @@
-﻿MyBatis:官网学习地址(http://www.mybatis.org/mybatis-3/zh/index.html)
+一.MyBatis:官网学习地址(http://www.mybatis.org/mybatis-3/zh/index.html)
 简介概述:
 MyBatis是一个优秀的持久层框架，它对JDBC操作数据库的过程进行了封装，使开发者只需要关注SQL本身。
 可以使用简单的XML或注解来配置和映射原生信息，将接口和 Java 的 POJOs(Plain Old Java Objects,普通的 Java对象)映射成数据库中的记录。
 SqlMapConfig.xml-SqlSessionFactory-SqlSession-Executor-(输入参数)MappedStatemend(输出参数)
 
-SqlMapConfig.xml
+Mapper接口开发:
+1、mapper.xml文件中的namespace与mapper.java接口的类的全路径相同。
+2、mapper.java接口中的方法名和mapper.xml中定义的每个sql的id相同
+3、mapper.java接口中的方法的输入参数类型和mapper.xml中定义的每个sql的parameterType的类型保持一致
+4、mapper.java接口中方法的输出参数类型和mapper.xml中定义的每个sql的resultType的类型保持一致
+eg:
+sqlSession.getMapper(Class<T> type);
+
+二.SqlMapConfig.xml配置
 常用标签配置
 properties //我们可将一些配置信息专门写在对应的配置文件中，然后在SqlMapConfig.xml引用即可
 settings  //利用setting配置全局参数从而作用于MyBatis的行为
@@ -17,6 +25,12 @@ environments
         transactionManager
         dataSource
 mappers //mappers用于配置SQL映射文件
+
+XML映射文件:
+#{ }表示占位符，用于接收输入参数。如果输入参数是简单类型那么#{}的括号中可以写成value或其它名称。
+当接收pojo对象值时可通过OGNL读取对象中的属性值；即利用属性.属性.属性…的方式获取对象属性值
+${ }表示拼接,如果接收简单类型，${}中只能写成value。
+当${}接收pojo对象值时可通过OGNL读取对象中的属性值；即利用属性.属性.属性…的方式获取对象属性值
 
 A.MyBatis输入映射parameterType
 parameterType对sql的输入参数进行定义，参数的类型可以是：基本类型、HashMap、pojo。
