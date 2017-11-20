@@ -39,14 +39,4 @@
 <link> 链接标签		ex:	在HTML中可以在<head> </head>标签中利用<link>标签来用于链接外部css文件和收藏夹图标(favicon.ico)
 					eg: <link rel="icon"  href="sina.ico">
 						<link rel="stylesheet"   href="test.css">
-
-
-
-
-
-
-
-
-
-
 						
