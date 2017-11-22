@@ -4,6 +4,7 @@ MyBatis是一个优秀的持久层框架，它对JDBC操作数据库的过程进
 可以使用简单的XML或注解来配置和映射原生信息，将接口和 Java 的 POJOs(Plain Old Java Objects,普通的 Java对象)映射成数据库中的记录。
 框架原理:SqlMapConfig.xml-SqlSessionFactory-SqlSession:操作数据库-Executor(内部操作数据库)-(输入参数)MappedStatemend(输出参数)
 
+SqlSession 是线程不安全的,所以一般放在方法体内，当作局部变量使用
 Mapper接口开发:
 1、mapper.xml文件中的namespace与mapper.java接口的类的全路径相同。
 2、mapper.java接口中的方法名和mapper.xml中定义的每个sql的id相同
@@ -14,9 +15,14 @@ sqlSession.getMapper(Class<T> type);
 
 二.SqlMapConfig.xml配置
 常用标签配置
-properties //我们可将一些配置信息专门写在对应的配置文件中，然后在SqlMapConfig.xml引用即可
+properties //我们可将一些配置信息专门写在对应的properties文件中，然后在SqlMapConfig.xml引用即可
 settings  //利用setting配置全局参数从而作用于MyBatis的行为
 typeAliases //typeAliases可为Java类型设置一个别名从而减少类完全限定名的冗余
+eg:
+<typeAliases>
+        <typeAlias type="cn.com.Student" alias="Student" /> <!--单个定义-->
+        <package name="cn.com.student" /> <!--批量定义:指定包名,自动定义别名，类名即别名-->
+</typeAliases>
 typeHandlers //MyBatis中通过typeHandlers完成JDBC类型和Java类型的转换
 objectFactory
 plugins
@@ -25,26 +31,41 @@ environments
         transactionManager
         dataSource
 mappers //mappers用于配置SQL映射文件
+eg:
+<mappers>
+    <mapper resource="sqlmap/StudentMapper.xml" /> <!--单个定义-->
+    <mapper class="cn.com.StudentMapper"/> <!--必须将xxxmapper.xml和xxxmaper.java置于同一个包下，且文件名必须一致-->
+    <package name="cn.com.student" /> <!--批量定义:指定包名,必须将xxxmapper.xml和xxxmaper.java置于同一个包下，且文件名必须一致。-->
+</mappers>
+
+
 
 XML映射文件:
-#{ }表示占位符，用于接收输入参数。如果输入参数是简单类型，参数名可以任意(可以value或其它名称)。
+#{ }表示占位符。如果输入参数是简单类型，参数名可以任意(可以value或其它名称)。
 当接收pojo对象值时可通过OGNL读取对象中的属性值；即利用属性.属性.属性…的方式获取对象属性值
-${ }表示拼接,如果接收简单类型，${}中只能写成value。
+${ }表示拼接。如果接收简单类型，${}中只能写成value。容易引起sql注入
 当接收pojo对象值时可通过OGNL读取对象中的属性值；即利用属性.属性.属性…的方式获取对象属性值
 
 A.MyBatis输入映射parameterType
 parameterType对sql的输入参数进行定义，参数的类型可以是：基本类型、HashMap、pojo。
 HashMap：在sql语句中从hashmap中取出对应key所对应的值.
+eg:
+ HashMap<String, Object> hashMap=new HashMap<String, Object>();
+ hashMap.put("id", 7);
+ hashMap.put("name", "木");
+<select id="findStudentByHashMap" parameterType="hashmap" resultType="cn.com.Student">
+        SELECT * FROM student WHERE id=#{id} and name like '%${name}%'
+</select>
 
 B.MyBatis输出映射resultType以及resultMap
 resultType对sql的输出参数进行定义，参数的类型可以是：基本类型、HashMap、pojo.
 HaspMap:将输出的字段名称作为map的key，value为字段值
-pojo:
+
 注意:使用resultType进行输出映射时务必将查询的列名与pojo中的属性名保持一致！如果要求不一致，则可以使用resultMap.
 resultMap:
 eg:
 <resultMap type="cn.com._Student" id="studentResultMap">
-    <id column="id" property="_id" />
+    <id column="id" property="_id" /> <!--将字段和属性对应-->
     <result column="name" property="_name" />
     <result column="gender" property="_gender" />
     <result column="birthday" property="_birthday" />
@@ -54,5 +75,42 @@ eg:
 </select>
 
 MyBatis的动态Sql
-where和if
-<foreach>标签来拼装
+where和if标签
+SQL片段：将上边动态SQL抽取出来
+一般基于单表来定义，可重用性高，不要包含where
+eg:
+<sql id="findStudentList_if">
+        <if test="studentCustom!=null">
+            <if test="studentCustom.gender!=null">
+                and gender=#{studentCustom.gender}
+            </if>
+            <if test="studentCustom.name!=null">
+                and name like '%${studentCustom.name}%'
+            </if>
+        </if>
+        <if test="idsList!=null">
+            <foreach collection="idsList" item="student_id" open="(" close=")" separator="OR">
+            <!--每次遍历需要拼接的串-->
+                id=#{student_id}
+            </foreach>
+        </if>
+</sql>
+//引用上面的SQL片段
+<select id="findStudentList" parameterType="cn.com.StudentQueryVO" resultType="cn.com.StudentCustom">
+        SELECT * FROM student
+        <where> <!--where标签会自动删除条件中第一个'and'-->
+            <include refid="findStudentList_if"></include>  <!--如果引用的id不在本mapper文件中，需要加namespace-->
+        </where>
+</select>
+
+<foreach>标签:
+collection表示pojo中的集合
+item表示遍历时集合中每个元素
+open表示开始遍历时的串
+close表示结束遍历时的串
+separator表示每个item的连接符
+
+myBatis和hibernate区别
+hibernate:SQL自动生成，修改难度高，过于设计.
+应用场景:需求变化不多的项目
+
