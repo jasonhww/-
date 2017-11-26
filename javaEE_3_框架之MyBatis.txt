@@ -64,8 +64,11 @@ HaspMap:将输出的字段名称作为map的key，value为字段值
 注意:使用resultType进行输出映射时务必将查询的列名与pojo中的属性名保持一致！如果要求不一致，则可以使用resultMap.
 resultMap:
 eg:
+<!--id:指定列中唯一标识
+    column:列名
+    property:映射的属性名-->
 <resultMap type="cn.com._Student" id="studentResultMap">
-    <id column="id" property="_id" /> <!--将字段和属性对应-->
+    <id column="id" property="_id" /> <!--将字段和POJO属性对应-->
     <result column="name" property="_name" />
     <result column="gender" property="_gender" />
     <result column="birthday" property="_birthday" />
@@ -113,4 +116,44 @@ separator表示每个item的连接符
 myBatis和hibernate区别
 hibernate:SQL自动生成，修改难度高，过于设计.
 应用场景:需求变化不多的项目
+
+二.高级映射
+1.一对一查询：
+采用resultType的方便，如果有查询特殊要求使用resultMap进行关联信息查询.
+resultMap扩展:association
+eg:查询订单及所属的用户信息
+<!--association:用于映射关联查询单个对象的信息-->
+<resultMap type="cn.com.order" id="orderResultMap">
+    <id column="id" property="_id" /> <!--将字段和属性对应-->
+    <result column="name" property="_name" />
+    <result column="number" property="number" />
+    <result column="createtime" property="createtime" />
+
+    <association property="user" javaType="cn.com.user">
+        <id column="user_id" property="id" /> <!--映射user类下的属性->
+        <result column="username" property="username" />
+        <result column="sex" property="sex" />
+    </association>
+</resultMap>
+2.一对多查询:
+resultMap扩展:collection
+eg:在上面的条件基础上再增加"订单明细"的查询
+<resultMap type="cn.com.order" id="orderDetailResultMap" extends="orderResultMap">
+    <!--订单信息->
+    <!--所属用户信息->
+    <!--订单明细信息->
+<!--
+collection:用于映射关系多条记录的集合对象中
+property:将集合映射到哪个属性(这里对应order中的orderdetailsList)
+ofType:集合中每个Item的pojo类型
+-->
+<collection property="orderdetailsList" ofType="cn.com.orderdetail">
+        <id column="orderdetail_id" property="id" /> <!--映射orderdetail类下的属性->
+        <result column="item_id" property="itemidId" />
+        <result column="item_num" property="itemName" />
+    </collection>
+</resultMap>
+
+3.resultMap总结:
+
 
