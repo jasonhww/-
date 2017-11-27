@@ -118,8 +118,7 @@ hibernate:SQL自动生成，修改难度高，过于设计.
 应用场景:需求变化不多的项目
 
 二.高级映射
-1.一对一查询：
-采用resultType的方便，如果有查询特殊要求使用resultMap进行关联信息查询.
+1.一对一查询:
 resultMap扩展:association
 eg:查询订单及所属的用户信息
 <!--association:用于映射关联查询单个对象的信息-->
@@ -155,5 +154,35 @@ ofType:集合中每个Item的pojo类型
 </resultMap>
 
 3.resultMap总结:
+resultType：
+作用:将查询结果sql列名和pojo属性名一致性映射到pojo中.
+场合:常见一些明细记录.
+resultMap:
+使用association和collection完成一对一和一对多的高级映射.
+作用:
+association:将关联查询映射到一个pojo对象中.
+collection:将关联查询映射到一个集合对象中.
+场合:
+association如:查询订单及关联用户信息
+collection 如:查询用户模块菜单及子菜单信息
+
+4.延迟加载
+association中select指定延迟加载执行的statement的id.
+eg:
+<resultMap type="cn.com.order" id="orderResultlazyLoaingMap">
+    <id column="id" property="_id" /> <!--将字段和属性对应-->
+    <result column="name" property="_name" />
+    <result column="number" property="number" />
+    <result column="createtime" property="createtime" />
+
+    <!--
+    select:指定延迟执行的statement的ID
+    column：订单信息中关联用户信息的列(外键)
+    -->
+    <association property="user" javaType="cn.com.user" select= "cn.com.UserMapper.findUserById"  column = "user_id">
+        <!-- 延迟加载user信息-->
+    </association>
+</resultMap>
+
 
 
