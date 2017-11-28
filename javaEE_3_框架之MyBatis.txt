@@ -167,6 +167,11 @@ association如:查询订单及关联用户信息
 collection 如:查询用户模块菜单及子菜单信息
 
 4.延迟加载
+配置开启(sqlMapConfig.xml中):
+<settings>
+	< />
+	< />
+</settings>
 association中select指定延迟加载执行的statement的id.
 eg:
 <resultMap type="cn.com.order" id="orderResultlazyLoaingMap">
@@ -183,6 +188,18 @@ eg:
         <!-- 延迟加载user信息-->
     </association>
 </resultMap>
+
+
+5.缓存
+一级缓存(默认支持):sqlSession级别缓存，构造sqlSession时有个hashMap存储缓存数据.不同的sqlSession之间的缓存数据区域是互不影响的。
+当同一个sqlSession执行插入，修改，删除并commit时，缓存则被清空.
+二级缓存:mapper级别的缓存，多个sqlSession共享所操作的同一个mapper下的数据。
+配置开启(sqlMapConfig.xml中):
+<settings>
+	< />
+</settings>
+
+
 
 
 
