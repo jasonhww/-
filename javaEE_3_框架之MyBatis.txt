@@ -169,8 +169,8 @@ collection 如:查询用户模块菜单及子菜单信息
 4.延迟加载
 配置开启(sqlMapConfig.xml中):
 <settings>
-	< />
-	< />
+	<setting name = "lazyLoadingEnabled" value = "true"/> <!--积极加载开关-->
+	<setting name = "aggressiveLazyLoading" value = "false" /> <!--设为消极加载-->
 </settings>
 association中select指定延迟加载执行的statement的id.
 eg:
@@ -190,14 +190,53 @@ eg:
 </resultMap>
 
 
-5.缓存
-一级缓存(默认支持):sqlSession级别缓存，构造sqlSession时有个hashMap存储缓存数据.不同的sqlSession之间的缓存数据区域是互不影响的。
+5.查询缓存
+A.一级缓存(默认支持):sqlSession级别缓存，构造sqlSession时有个hashMap存储缓存数据.不同的sqlSession之间的缓存数据区域是互不影响的。
 当同一个sqlSession执行插入，修改，删除并commit时，缓存则被清空.
-二级缓存:mapper级别的缓存，多个sqlSession共享所操作的同一个mapper下的数据。
-配置开启(sqlMapConfig.xml中):
+B.二级缓存概念:
+mapper级别的缓存，多个sqlSession共享所操作的同一个mapper下的数据。
+同理，当某一个sqlSession去执行相同mapper下sql并commit时，则缓存被清空.
+b1.配置开启(sqlMapConfig.xml中):
 <settings>
-	< />
+	<setting name = "cacheEnabled" value = "true" /> <!--开启二级缓存-->
 </settings>
+b2.同时在对应mapper.xml文件中，配置开启
+<!-- type:指定cache接口的实现类类型,默认cache实现类为PerpetualCache
+要和ehcache整合，则配置ehcache的实现类
+
+-->
+<cache 
+  type = ""/>
+sqlSession.close关闭时，才会写入二级缓存.
+
+UseCache的配置：禁用缓存(select标签中使用)
+针对每次查询都需最新数据的sql。
+FlushCache刷新缓存：默认true
+
+C.二级缓存整合ehCache
+redis/memcached/ehCache是一个分布式框架
+mybatis提供一个cache接口，去实现用户自己的缓存策略.
+导入ehCache-core和mybatis-ehCache两个包,再配置ehCache.xml文件
+
+D.二级缓存应用场景和局限性
+场景:访问多且查询结果实时性要求不高.如:数据统计分析。
+实现方法:设置flushInterval刷新间隔
+
+局限性:对细粒度数据级别缓存实现不好，需要自己在业务层处理
+
+6.Spirng和MyBatis的整合
+环境准备:
+mybatis的jar包
+spirng的jar包
+mybatis和spirng的整合包：mybatis-spring-1.X.X.jar
+
+配置：
+在spirng中配置sqlSessionFactory和数据源
+A.Dao方式的整合
+创建mapper.xml和dao,(配置dao通过spirng配置注入sqlSessionFactory)
+dao实现类继承SqlSessionDaoSupport
+
+
 
 
 
