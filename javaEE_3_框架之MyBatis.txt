@@ -232,12 +232,38 @@ mybatis和spirng的整合包：mybatis-spring-1.X.X.jar
 
 配置：
 在spirng中配置sqlSessionFactory和数据源
+eg:
+<!--SqlSessionFactory-->
+<bean id = "sqlSessionFactory" class = "org.mybatis.spring.SqlSessionFactoryBean"> 
+		<property name= "configLocation" value = "指定mybatis配置文件路径">
+		<property name= "dataSource" ref = "引入配置的dataSource的ID">
+</bean>
+
 A.Dao方式的整合
-创建mapper.xml和dao,(配置dao通过spirng配置注入sqlSessionFactory)
+创建mapper.xml和dao(配置dao实现类通过spirng配置注入sqlSessionFactory)
 dao实现类继承SqlSessionDaoSupport
 
+B.Mapper方式的整合
+创建mapper.xml和mapper.java(配置mapper实现类MapperFactoryBean)
+eg:
+Spring中的配置:
+<!--单独配置mapper接口
+MapperFactoryBean:根据mapper接口生成代理对象
+-->
+<bean id = "XXXMapper" class = "org.mybatis.spring.mapper.MapperFacatoryBean"> 
+		<property name= "mapperInterface" value = "指定mapper接口的类全路径">
+		<property name= "sqlSessionFactory" ref = "引入配置的sqlSessionFactory的ID">
+</bean>
 
-
+<!--批量配置mapper接口,自动创建代理对象和注入sqlSessionFactory
+规范:mapper.java和mapper.xml文件名称保持一致，且在一个目录中
+自动扫描出的mapper的bean的id为mapper类名(首字母小写)
+-->
+<bean class = "org.mybatis.spring.mapper.MapperScannerConfigurer"> 
+		<!--指定扫描的包名，如果扫描多个包，每个包中间使用半角逗号隔开-->
+		<property name= "basePackage" value = "指定mapper接口所在包名">
+		<property name= "sqlSessuibFactoryBeanName" ref = "引入配置的sqlSessionFactory的ID">
+</bean>
 
 
 
