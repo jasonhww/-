@@ -1,0 +1,147 @@
+﻿一.MVC原理和SpringMVC原理：
+MVC：
+1.浏览器发送请求 → 控制层C → 模型层M(处理数据)
+2.模型层M(处理完数据后) → 控制层C → 视图层V(渲染数据)
+3.视图层V(渲染数据完) → 控制层C→  响应结果
+
+SpiringMVC:
+1.浏览器发送请求 → 中央控制器(DispatcherServlet) → 利用处理器映射器(HandlerMapping)寻找Handler
+2.HandlerMapping(寻找完后,返回一个包含Handler和拦截器的HandlerExecutionChain) → DispatcherServlet
+
+3.DispatcherServlet → 利用处理器适配器(HandlerAdapter)执行Handler
+4.Handler(Controller) (执行完后,返回ModelAndView) → HandlerAdapter(同样返回ModelAndView)) → DispatcherServlet
+
+5.DispatcherServlet → 利用视图解析器(ViewResolver)进行解析
+6.ViewResolver(解析完后,返回view) → DispatcherServlet
+
+7.DispatcherServlet → 视图层V(将View与ModelAndView中的Model结合进行视图渲染)
+8.视图层V(渲染数据完) → DispatcherServlet → 响应结果
+
+二.入门程序
+A.配置前端控制器web.xml中
+eg:
+	<servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class> org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <!--contextConfigLocation配置spirngmvc加载的配置文件
+            如果不配置,默认加载是/WEB-INF/servlet名称-servlet.xml	
+            -->
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:springmvc.xml</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+
+        <servlet-name>springmvc</servlet-name>
+        <!--
+    	*.action:访问以.action结尾由DispatcherServlet解析
+    	/:所有访问地址由DispatcherServlet解析,静态文件需要配置不让它解析
+    	/*:不正确的配置,最终转发到jsp,由DispatcherServlet解析
+    	-->
+        <url-pattern>*.action</url-pattern>
+    </servlet-mapping>
+ 
+B1.编写Handler,实现Controller接口/HttpRequestHandler接口.
+
+C1.配置非注解开发处理器映射器、处理器适配器、视图解析器springmvc.xml中
+eg:
+	<!-- 自定义Handler -->
+    <bean id="myController" name="/welcome.action" class="cn.com.MyController"></bean>
+    <!-- 自定义Handler -->
+    <bean id="myController2" name="/welcome2.action" class="cn.com.MyController2"></bean>
+
+	<!-- 处理器映射器之一 
+	将bean的name作为url进行查找,需要在配置handler时指定beanname.
+	-->
+    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"></bean>
+
+    <!-- 处理器映射器之二 
+    简单url映射
+    -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    	<property name="mappings">
+        	<props>
+        		<!--将key作为url,进行映射到myController-->
+            	<prop key="/hello.action">myController</prop>
+            	<prop key="/hello2.action">myController2</prop>
+        	</props>
+    	</property>
+	</bean>
+
+
+
+    <!-- 处理器适配器之一 
+    要求:实现Controller接口
+    -->
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"></bean>
+
+    <!-- 处理器适配器之二
+    要求:实现HttpRequestHandler接口
+    -->
+    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"></bean>
+
+
+
+    <!-- 视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsps/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+ 
+B2.编写Handler.
+@Controller 标识该类是一个处理器(使用在类上)
+//使用在方法上,实现对某个方法和url进行映射(对比非注解是实现对类的映射)
+@RequestMapping("/queryItems") 配置映射关系
+
+
+C2.配置注解开发处理器映射器、处理器适配器、视图解析器springmvc.xml中
+
+<!-- 配置自动扫描handle所在的包(也可单独配置不扫描) -->
+	<context:component-scan base-package="cn.com"></context:component-scan>
+
+<!-- 配置注解开发所需的处理器映射器spring3.1后-->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"></bean>
+
+<!-- 配置注解开发所需的处理器适配器spring3.1后-->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean>
+
+<!--实际开发:以上配置方式采取代替
+	mvc:annotation-driven标签代替
+
+-->
+
+<!-- 视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsps/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+三.springMVC和mybatis整合思路
+spring将各层进行整合,进行事务控制
+管理持久层的mapper,
+业务层的service,service中可以调用mapper接口
+表现层的handler.handler中可以调用service接口
+
+step1:整合dao层.
+mybatis和spring整合,通过spring管理mapper接口
+使用mapper的扫描器自动扫描mapper接口.
+
+step2:整合service层
+通过spring管理service接口。
+使用配置方式将service接口配置在spring配置文件中
+实现事务控制.
+
+step3:整合springmvc
+由于springmvc是spring的模块，不需要整合。
+
+
+
+
+
+
+
+
+
+
