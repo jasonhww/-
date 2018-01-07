@@ -92,8 +92,10 @@ eg:
  
 B2.编写Handler.
 @Controller 标识该类是一个处理器(使用在类上)
-//使用在方法上,实现对某个方法和url进行映射(对比非注解是实现对类的映射)
+//使用在类上,便于url管理 定义根路径
+//使用在方法上,定义子路径
 @RequestMapping("/queryItems") 配置映射关系
+@RequestMapping(value = "/queryItems", method = {RequestMethod.POST, RequestMethod.GET})
 
 
 C2.配置注解开发处理器映射器、处理器适配器、视图解析器springmvc.xml中
@@ -135,6 +137,14 @@ step2:整合service层
 
 step3:整合springmvc
 由于springmvc是spring的模块，不需要整合。
+
+四、Controller方法的返回值
+1.返回ModelAndView
+2.返回String
+3.返回
+
+
+
 
 
 
