@@ -1,0 +1,26 @@
+﻿1.post乱码
+	在web.xml中配置过滤器.
+	eg:
+	<!-- 处理POST乱码 -->
+	<filter>
+	    <filter-name>characterEncoding</filter-name>
+	    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+	    <init-param>
+	        <param-name>encoding</param-name>
+	        <param-value>UTF-8</param-value>
+	    </init-param>
+	</filter>
+
+	<filter-mapping>
+	    <filter-name>characterEncoding</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+2.get乱码
+	方法一:修改tomcat配置文件添加编码和工程编码一致.
+	eg:
+	<Connector URIEncoding = "utf-8" .../>
+ 
+	方法二:对参数进行重新编码
+	eg:
+	new String(request.getParamter("参数名").getBytes("ISO8859-1"),"UTF-8");
