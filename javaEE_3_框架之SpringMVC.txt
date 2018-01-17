@@ -196,6 +196,39 @@ f:map类型
 	通过StudentQueryVo studentQueryVo将信息存储到其map属性中
 
 
+六.服务器端的校验-validation框架
+导包-配置-使用注解@notNull @size @validate和bingresult
+不同的controller方法对同一个pojo需要采取不同的校验规则采取分组校验
+
+七.数据回显
+1.springmvc默认对pojo数据进行回显
+pojo数据传入controller方法后,springmvc自动将pojo数据放到request域，key等于pojo类型(首字母小写)
+2.@ModelAttribute 
+a.可以指定pojo回显到页面在request域中的key
+eg:用在形参中
+ @ModelAttribute("student") StudentCustom studentCustom
+
+b.可以指定方法的返回值传到页面request的key
+eg:用在方法上
+	@ModelAttribute("itemtypes")
+	public Map<String,String> getItemTypes(){
+		Map<String,String> itemTypes = new HashMap<String,String>();
+		itemTypes.put("110","公安")；
+		return itemTypes;
+	}
+		
+
+c.利用model方法(既能对pojo进行回显,也能对简单类型进行回显)
+eg:
+	model.addAttribute("pojo类型",pojo);
+	model.addAttribute("简单类型",110);
+
+八.全局异常处理器
+实现HandlerExceptionResolver接口
+在spiringmvc文件中配置实现的类
+
+
+
 六.springmvc和strust2的区别
 a.springmvc基于方法,strust2基于类开发.
 springmvc将url和controller方法进行映射,映射成功后生成一个handler对象，该对象只有一个method.
