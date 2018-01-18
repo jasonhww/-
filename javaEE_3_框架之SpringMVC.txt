@@ -227,6 +227,28 @@ eg:
 实现HandlerExceptionResolver接口
 在spiringmvc文件中配置实现的类
 
+九.上传图片
+
+十.json数据交互
+导包
+eg: jackson-core和jackson-mapper包
+
+springmvc文件配置json转换器
+
+eg:
+<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+        <list>
+        <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"></bean>
+        </list>
+        </property>
+    </bean>
+ 如果使用<mvc:annotation-driven />方式，则不用配置以上代码
+ 
+@requestBody 将json串转成java对象
+@reponseBody 将java对象转成json串
+
+
 
 
 六.springmvc和strust2的区别
