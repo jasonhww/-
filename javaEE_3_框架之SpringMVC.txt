@@ -37,7 +37,8 @@ eg:
         <servlet-name>springmvc</servlet-name>
         <!--
     	*.action:访问以.action结尾由DispatcherServlet解析
-    	/:所有访问地址由DispatcherServlet解析,静态文件需要配置不让它解析
+    	/:所有访问地址由DispatcherServlet解析,静态文件需要配置不让它解析,
+    	此方式可以实现RESTful风格的url
     	/*:不正确的配置,最终转发到jsp,由DispatcherServlet解析
     	-->
         <url-pattern>*.action</url-pattern>
@@ -247,6 +248,28 @@ eg:
  
 @requestBody 将json串转成java对象
 @reponseBody 将java对象转成json串
+
+十一.RESYFull支持
+ RESTFull特点:
+	1.url的规范,不再是keyValues形式
+eg:
+  	非REST的url:http://XXXXX/restFull.action?id=110
+  	http://xxxxx/restFull/110
+ 	
+ 	2.请求方式规范,需要设置对应的请求方式如GET/POST/PUT/DELETE. 
+ 	一般较少遵循,GET/POST使用居多.
+ 	
+ 	3.contentType的规范.
+
+a.web.xml先配置RESTful的前端控制器
+b.springmvc.xml中需要配置静态文件不让它解析
+c.开始使用
+ @PathVariable("id") 将url中的{id}和形参绑定
+
+ 十二.拦截器
+
+ 
+
 
 
 
