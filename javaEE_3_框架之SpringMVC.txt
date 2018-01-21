@@ -267,7 +267,9 @@ c.开始使用
  @PathVariable("id") 将url中的{id}和形参绑定
 
  十二.拦截器
-
+	a.实现HandlerInterceptor接口.
+	b.配置
+	针对handlerMapping来配置(不推荐)和针对全局拦截配置
  
 
 
