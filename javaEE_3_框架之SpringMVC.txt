@@ -70,7 +70,11 @@ eg:
         	</props>
     	</property>
 	</bean>
-
+    <!-- 处理器映射器之三
+    处理器的类名作为url
+    三种映射器可以共存
+    -->
+    <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
 
 
     <!-- 处理器适配器之一 
@@ -270,7 +274,11 @@ c.开始使用
 	a.实现HandlerInterceptor接口.
 	b.配置
 	针对handlerMapping来配置(不推荐)和针对全局拦截配置
- 
+	多个拦截器执行流程总结:
+	postHandle和afterCompletion执行的前提条件preHandle为true时.
+ 	1.preHandle按配置顺序执行,postHandle和afterCompletion顺序相反.
+ 	2.preHandle返回true时,才会执行下一个Interceptor的preHandle.
+ 	3.只要有一个Interceptor没放行,那么postHandle不会执行.
 
 
 
