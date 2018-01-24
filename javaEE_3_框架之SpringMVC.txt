@@ -233,13 +233,16 @@ eg:
 在spiringmvc文件中配置实现的类
 
 九.上传图片
+a.导包
+eg:	commons-fileupload和commons-io包
+b.springmvc文件配置开启文件上传
+
 
 十.json数据交互
-导包
+a.导包
 eg: jackson-core和jackson-mapper包
 
-springmvc文件配置json转换器
-
+b.springmvc文件配置json转换器
 eg:
 <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
         <property name="messageConverters">
@@ -278,7 +281,7 @@ c.开始使用
 	postHandle和afterCompletion执行的前提条件preHandle为true时.
  	1.preHandle按配置顺序执行,postHandle和afterCompletion顺序相反.
  	2.preHandle返回true时,才会执行下一个Interceptor的preHandle.
- 	3.只要有一个Interceptor没放行,那么postHandle不会执行.
+ 	3.只要有一个Interceptor没放行,那么所有的postHandle不会执行.
 
 
 
