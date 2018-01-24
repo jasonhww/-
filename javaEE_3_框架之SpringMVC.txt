@@ -206,15 +206,15 @@ f:map类型
 不同的controller方法对同一个pojo需要采取不同的校验规则采取分组校验
 
 七.数据回显
-1.springmvc默认对pojo数据进行回显
-pojo数据传入controller方法后,springmvc自动将pojo数据放到request域，key等于pojo类型(首字母小写)
+1.springmvc默认对pojo形参数据进行回显
+pojo数据传入controller方法后,springmvc自动将pojo形参数据放到request域，key等于pojo类型(首字母小写)
 2.@ModelAttribute 
 a.可以指定pojo回显到页面在request域中的key
-eg:用在形参中
+eg:用在形参中(第一点说明的默认行为)
  @ModelAttribute("student") StudentCustom studentCustom
 
 b.可以指定方法的返回值传到页面request的key
-eg:用在方法上
+eg:用在方法上,不能通过url方式访问，前端页面需放在其他form中.
 	@ModelAttribute("itemtypes")
 	public Map<String,String> getItemTypes(){
 		Map<String,String> itemTypes = new HashMap<String,String>();
@@ -225,7 +225,7 @@ eg:用在方法上
 
 c.利用model方法(既能对pojo进行回显,也能对简单类型进行回显)
 eg:
-	model.addAttribute("pojo类型",pojo);
+	model.addAttribute("pojo类型",pojo);                                                                                    
 	model.addAttribute("简单类型",110);
 
 八.全局异常处理器
