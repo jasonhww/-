@@ -262,7 +262,7 @@ MapperFactoryBean:根据mapper接口生成代理对象
 <bean class = "org.mybatis.spring.mapper.MapperScannerConfigurer"> 
 		<!--指定扫描的包名，如果扫描多个包，每个包中间使用半角逗号隔开-->
 		<property name= "basePackage" value = "指定mapper接口所在包名">
-		<property name= "sqlSessuibFactoryBeanName" ref = "引入配置的sqlSessionFactory的ID">
+		<property name= "sqlSessuibFactoryBeanName" value = "引入配置的sqlSessionFactory的ID">
 </bean>
 
 

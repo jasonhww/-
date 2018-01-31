@@ -1,15 +1,13 @@
 ﻿Spirng简介：(本框架DEMO源码见SpringWTestOne项目)
 开源轻量级，一站式框架。
-如：web层：Spring MVC service层：spirng的IOC dao层：JDBC Template
+如：web层：Spring MVC service层：spirng的IOC dao层：JDBC Template(也可替换为mybatis或者其他框架)
 一. IOC （控制反转）
-简介:把对象的创建交给spring进行管理
+简介:把对象的创建交给spring进行管理,可以降低耦合度
 方式:
 A.xml配置 B.注解
 底层原理:
-1)xml配置文件
-2)dom4j解析xml
-3)工厂设计模式
-4)反射
+1.利用dom4j解析xml配置文件.
+2.采取工厂设计模式,利用反射创建对象.
 
 * Spring的Bean管理(配置文件)
 1.在spirng里面通过配置文件创建对象
@@ -66,19 +64,23 @@ scope:Bean的作用范围 eg: sigleton(默认值) prototype(多例)
 
 * IOC和DI
 IOC:控制反转,将对象的创建交给spring配置
-DI:依赖注入,在类中注入属性
+DI:依赖注入,在类中设置属性值
 区别:DI需要在IOC的基础上去执行.
 
 * Spring的Bean管理(注解)
-创建对象的三个注解:
+a.配置文件中开启注解扫描
+eg：
+	<context:component-scan base-package=" org.hww.ioc.notemethod.beans"/>
+b.创建对象的三个注解:
 @Component(id值)
-@Service(id值)
-@Controller(id值)
-@Repository(id值)
+//三个衍生注解,功能一样标注类本身的用途清晰
+@Service 业务层
+@Controller web层
+@Repository 持久层
 
-属性注入
-@Autowired
-@Resource(指定引用的id值)
+c.属性注入
+@Autowired //自动注入,系统根据类名去查找.
+@Resource(指定引用的id值) //手动注入
 
 * 配置文件和注解混合使用
 创建对象通过配置文件方式
@@ -86,8 +88,7 @@ DI:依赖注入,在类中注入属性
 
 spring整合web项目
 解决方案(原理):
-服务器启动时,创建对象加载配置文件.
-底层使用监听器,ServletContext对象.
+服务器启动时,底层使用监听器,在ServletContext对象创建时加载配置文件.
 方式:
 web.xml中,.
 <!--指定配置文件路径-->
@@ -143,7 +144,7 @@ eg:
 注解:
 eg:
 <!--开启aop自动化代理-->
-   <aop:aspectj-autoproxy/>
+   <aop:aspectj-autoproxy/>S
 @Aspect
 public class Father4 {
 
