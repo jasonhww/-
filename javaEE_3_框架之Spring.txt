@@ -1,4 +1,4 @@
-﻿Spirng简介：(本框架DEMO源码见SpringWTestOne项目)
+Spirng简介：(本框架DEMO源码见SpringWTestOne项目)
 开源轻量级，一站式框架。
 如：web层：Spring MVC service层：spirng的IOC dao层：JDBC Template(也可替换为mybatis或者其他框架)
 一. IOC （控制反转）
@@ -98,20 +98,25 @@ web.xml中,.
 </context-param>
 <!--配置监听器-->
 <listener>
-     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class> 
 </listener>
 
 二.AOP
-简介:面向切面编程,扩展功能不修改源代码实现
+简介:面向切面编程,扩展功能不修改源代码实现(横向抽取代替纵向继续抽取机制)
 原理:采取动态代理的方式
-操作术语:
-JoinPoint(连接点):类里面可以被增强的方法，这些方法称为连接点.
+A.有接口,采取JDK动态代理方式.(创建和实现类平级的代理对象,和实现类具有相同的功能)
+B.无接口,采取CGLIB动态代理方式.(创建和当前类的子类的代理对象,在子类调用父类方法完成增强)
+
+操作术语: 
+JoinPoint(连接点):类里面可以被增强的方法.
 Pointcut(切入点):实际增强的方法.
 表达式配置切入点
 execution(<访问修饰符>方法的全路径(<参数><异常>))
 eg:
-execution(*空格org.me.person.add(..))
-execution(*空格org.me.person.*(..))
+execution(* org.me.person.add(..))
+execution(* org.me.person.*(..))
+execution(* org.me.person.save*(..))
+execution(* *.*(..))
 
 Advice(通知/增强):增强的逻辑,比如扩张某个功能.
 前置通知:在方法之前执行
