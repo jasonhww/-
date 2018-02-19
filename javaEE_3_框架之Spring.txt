@@ -149,10 +149,10 @@ eg:
 注解:
 eg:
 <!--开启aop自动化代理-->
-   <aop:aspectj-autoproxy/>S
+   <aop:aspectj-autoproxy/>
 @Aspect
 public class Father4 {
-
+	//将增强应用到切入点上
     @Before(value = "execution(* org.hww.aop.notemethod.beans.Person4.*(..))")
     public void before1() {
         System.out.println("前置增强..............");
@@ -160,14 +160,14 @@ public class Father4 {
 
 }
 
-三. Spring中JdbcTemplate的使用(作用同DBUtils)
+三.Spring中JdbcTemplate的使用(作用同DBUtils)
 第一步.设置数据库信息
 第二步.创建JdbcTemplate对象.
 增、删、改通过update方法操作数据库.
 查询通过query和queryForObject方法,需要自己实现RowMapper接口.
 详见源码.
 
-四.Spring中配置
+四.Spring中配置数据库连接池
 a.配置C3P0数据库连接池
 b.service和dao的注入过程示例
 详见源码.
@@ -176,11 +176,14 @@ b.service和dao的注入过程示例
 A.xml配置 B.注解
 事务管理器API通过PlatformTransactionManager的实现类,
 不同的持久化层使用不同的实现类.
+
 xml配置：
 配置事务管理器
 配置事务增强 <tx:advice/>
 配置AOP.
+
 注解:
 配置事务管理器
-配置开始注解事务扫描
-详见源码.
+配置开始注解事务扫描  
+<tx:annotation-driven transaction-manager="transactionManager"/>
+使用事务的方法所在类上使用 @Transactional注解
