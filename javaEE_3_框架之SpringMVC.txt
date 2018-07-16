@@ -43,7 +43,8 @@ eg:
     	-->
         <url-pattern>*.action</url-pattern>
     </servlet-mapping>
- 
+
+xml方式: 
 B1.编写Handler,实现Controller接口/HttpRequestHandler接口.
 
 C1.配置非注解开发处理器映射器、处理器适配器、视图解析器springmvc.xml中
@@ -94,7 +95,8 @@ eg:
         <property name="prefix" value="/WEB-INF/jsps/"></property>
         <property name="suffix" value=".jsp"></property>
     </bean>
- 
+
+注解方式: 
 B2.编写Handler.
 @Controller 标识该类是一个处理器(使用在类上)
 //使用在类上,便于url管理 定义根路径
@@ -290,7 +292,7 @@ c.开始使用
 六.springmvc和strust2的区别
 a.springmvc基于方法,strust2基于类开发.
 springmvc将url和controller方法进行映射,映射成功后生成一个handler对象，该对象只有一个method.
-b.pringmvc可以进行单例,strust2通过类成员变量,无法单例.
+b.springmvc可以进行单例,strust2通过类成员变量,无法单例.
 c.strust2速度慢，因为使用了标签.
 
 
