@@ -17,12 +17,6 @@ IntentFilter的匹配规则
 (可以没有，因为默认系统会加上default的category)
 3.	Data的匹配规则: intent中至少包含(匹配)一个IntentFilter中的data
 
-
-
-QYZ
-1旋转动画与缩放动画有中心点
-
-
 MeasureSpec相关知识:
 MeasureSpec由size和mode构成.
 对于DecorView,MeasureSpec由窗口与自身的layoutParams共同决定.
@@ -166,18 +160,6 @@ Handler的原理解析:
 5.接下来就回到了2的流程.
 
 
-属性动画原理:
-ValueAnimator.ofInt()/float/object - 插值器(当前动画数值进度fraction) - 估值器(返回具体数值) - 回调onAnimationUpdate
-ObjectAnimator.ofInt()/float/object - 插值器(当前动画数值进度fraction) - 估值器(返回具体数值) - 拼接set+PropertyName反射回调set方法.
-PropertyValuesHolder同一控件可以实现多个动画的播放.
-Keyframe实现每一帧的速率,至少要设置两帧.
-playTogether和playSequentially只负责定时激活控件动画.
-当AnimatorSet所拥有的函数与单个动画所拥有的函数冲突时，就以AnimatorSet设置为准。但唯一的例外就是setStartDelay。
-仅针对性的延长AnimatorSet的激活时间
-AnimatorSet真正激活延时 = AnimatorSet.startDelay+第一个动画.startDelay
-
-
-
 项目:
 支付模块
 推荐模块-根据屏幕参数初始化滚动线scrool_image-onPageScrolled参数设置动画
@@ -191,48 +173,5 @@ AnimatorSet真正激活延时 = AnimatorSet.startDelay+第一个动画.startDela
 装饰者模式：扩展功能类.
 工厂模式:静态工厂、简单工厂、工厂方法(创建一个创建对象的接口把类实例化的过程推迟到子类)、抽象工厂(用于创建相关的或依赖对象的家族，而不需要明确指定具体类)
 适配器模式：让两个互不兼容的接口能正常对接.
-
-
-RXJAVA:
-一.初识Observable/Observer:
-onComplete和onError必须唯一并且互斥.(上游之后的事件将继续发送, 而下游之后将不再继续接收事件.)
-Disposable
-
-二.Schedulers线程切换:
-subscribeOn 
-切换上游所在线程,多次切换以第一次为准.
-observeOn
-切换下游所在线程,可以多次切换.
-
-三.操作符:
-变换 (位于离它实现最近的线程中)
-Map 
-一对一的变换
-FlatMap 
-一对多的变换(一个Observable转换为多个Observables,所有事件封装成另一个Observable)
-Zip 
-多个Observable组合后按顺序发送,(它只发射与发射数据项最少的那个Observable一样多的数据)
-filter 
-过滤事件 
-sample 
-每隔指定的时间就从上游中取出任意一个事件发送给下游. 
-interval
-发送Long型的事件,从0开始,每隔指定的时间就把数字加1并发送出来.
-
-五.背压Backpressure.
-同步订阅:当上游没发送一个事件,下游接收处理完后,才能接着发送下一个事件.
-反之异步订阅无需等待接收处理.                         
-传统解决方式:
-一.是从数量上进行治理, 减少发送进水缸里的事件
-二.是从速度上进行治理, 减缓事件发送进水缸的速度
-
-六.初识Flowable/Subscriber:
-Subscription对比Dispose.
-Subscription 多了一个request(Long g)方法,用于指定下游能处理事件的能力.
-BackpressureStrategy.ERR 超过处理能力直接抛异常.
-.BUFFER 无限大,会报OOM.
-.Drop 直接把存不下的事件丢弃.
-.Latest 只保留最新的事件.
-
 xhamster.com
 
