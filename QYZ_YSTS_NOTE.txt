@@ -18,110 +18,6 @@ IntentFilter的匹配规则
 3.	Data的匹配规则: intent中至少包含(匹配)一个IntentFilter中的data
 
 
-
-QYZ
-1旋转动画与缩放动画有中心点
-
-
-MeasureSpec相关知识:
-MeasureSpec由size和mode构成.
-对于DecorView,MeasureSpec由窗口与自身的layoutParams共同决定.
-对于普通View,MeasureSpec由父容器的MeasureSpec与自身的layoutParams共同决定.
-
-Measure过程:
-核心思想:
-View中:
-Measure-onMesure- setMeasuredDimension-确定view的大小.
-ViewGroup中:
-OnMeasure确定子View的大小，从而确定自身的大小
-提供了measureChildren-measureChild(或者measureChildWithMargins) 方法,遍历测量每个子view.默认已经调用子View的measure方法.
-和具体布局有关，再重写
-.
-
-Layout过程
-Layout-Onlayout()
-核心思想:
-ViewGroup首先调用了layout()确定了自己本身在其父View中的位置，
-然后调用onLayout()确定每个子View的位置，
-每个子View又会调用View的layout()方法来确定自己在ViewGroup的位置。
-
-
-GIT一般操作流程:工作区-暂存区-本地库--拉取更新本地-推送到远程库
-git init
-git status
-git add (文件) (文件夹) (.代表添加所有文件)
-git commit   参数-m  --amend追加修改
-git log (git log 具体id值 -1 –p) -p具体修改了什么内容
-git reflog查看命令历史
-
-git版本回退 
-HEAD当前版本
-git reset --hard HEAD^ 上一个版本 HEAD^^上两个版本 HEAD~100往上100个版本
-git reset –hard (commit id版本号）回退到指定版本
-
-git diff 比较不同
-git diff  #是工作区(work dict)和暂存区(stage)的比较
-git diff --cached #是暂存区(stage)和分支(master)的比较
-两次提交id，两个分支
-
-git rm 文件 删除文件
-
-checkout  
-1“切换作用”分支，TAG，某一次commit      
-2“-- 撤销一键还原作用”撤销工作区域的文件(还没有 add 进暂存区的文件)
-(已经add添加进暂存区的，要先git reset HEAD 取消添加，再撤销)
-
-一般分支策略:master-dev-feature/bug.
-//本地分支
-git show <branch-name> 查看对应信息.
-git branch 查看分支
-git branch a创建a分支
-git branch –d a 删除a分支
-git branch –D a 强制删除a分支(删除一个没有合并的分支)
-git checkout a 切换到a分支
-git checkout -b a 切换并创建a分支
-git merge a 合并a分支到当前分支
-git merge --no-ff –m“merge branch”a
---no-ff 禁用快速模式，分支历史上可以查看分支信息.
-
-//本地标签
-TAG同分支类似
-git tag 查看所有标签
-git tag <name>新建标签，默认为HEAD，也可以指定一个commit id；
-git tag -a <tagName> -m "I am des..."可以指定标签信息
-推送标签类型分支
-git push origin :refs/tags/<tagname>删除一个远程标签.先删除本地
-很多操作类似分支. 
-
-
-//远程仓库
-git clone git@github.com:jasonhww/test.git //clone某远程仓库
-git remote add origin git@github.com: jasonhww /test.git//本地仓库关联一个远程仓库
-git remote rm origin 删除远程仓库关联
-git remote –v//查看有哪些远程仓库
-//推送分支
-git push origin master //推送master分支代码到远程库
-git push origin dev 推送dev分支到远程库
-//拉取分支
-git pull origin master //从远程库拉取master分支代码,合并到本地
-git fetch origin master //远程库上的master分支代码拉取到本地,暂不合并(需要调用merge命令进行合并)
-git checkout -b <branch-name> origin/<branch-name> 在本地创建和远程分支对应的分支
-git branch --set-upstream <branch-name> origin/<branch-name>建立本地分支和远程分支的关联
-
-
-git stash 藏匿 （当前分支所有没有 commit 的代码先暂存起来）
-git stash list 查看藏匿记录
-git stash apply 还原藏匿部分并git stash drop 移除最近一条藏匿记录
-git stash pop 还原并移除
-git stash clear 清空所有藏匿记录
-
-
-配置相关:
---global user.name
---global user.email
---global alias.别名
-
-
 Volley的原理解析:
 源码流程:
 Volley.newqueue-requeue.start(创建一个缓存线程和遍历开启4个网络请求线程)
@@ -133,49 +29,11 @@ reque.add(request是否可以缓存-缓存线程和网络请求线程)
 add这条请求会先被加入到缓存队列当中，如果发现可以找到相应的缓存结果就直接读取缓存并解析，然后回调给主线程。
 如果在缓存中没有找到结果，则将这条请求加入到网络请求队列中，然后处理发送HTTP请求，解析响应结果，写入缓存，并回调主线程。
 
-EventBus的原理解析:
-源码流程:
-A.register.
-扫描了所有的方法，把匹配的方法最终保存在subscriptionsByEventType（Map，key：eventType ； value：CopyOnWriteArrayList<Subscription> ）中；
-eventType是我们方法参数的Class，Subscription中则保存着subscriber, subscriberMethod（method, threadMode, eventType）, priority；包含了执行改方法所需的一切。
-B.POST(event).
-event.class和线程状态.postSingleEvent(遍历所有的Class，到subscriptionsByEventType去查找subscriptions)-postToSubscription（去反射执行方法了）
-总结:
-registe在一个单例内部,会把当前类中匹配的方法，存入一个map，而post会根据实参去map查找进行反射调用.
-
-Butterknife的原理解析:
-源码流程:
-A编译时期.自定义的注解处理器,先init()相关工具类,通过process方法扫描解析所有的注解信息,并形成BindingClass,遍历生成java文件.
-B调用时期.Butterknife的bind-viewBind.bind方法.
-总结:
-APT(Annotation Processing Tool)编译时解析技术.
-在编译的时候，编译器会扫描所有带有你要处理的注解的类.通过process方法,对注解进行处理，生成对应的java文件.
-通过bind方法，利用反射拼接类名ViewBind的实例对象,调用生成的java文件的方法.
 
 AsyncTask的原理解析:
 1.execute()-初始化mWorker和mFuture。
 2.两个线程池,一个SerialExecutor任务队列的排列，一个THREAD_POLL_EXTCUTOR真正执行任务.
 3.mworker中call()-postResult(doInBackground(PARAMES))-handler发送消息-回调OnCancel或者OnPostExecute().
-
-Handler的原理解析:
-1.Looper.prepare()通过ThreadLocal与线程绑定一个Looper实例，然后该实例中包含了一个MessageQueue的实例.
-2.Looper.loop()方法开启消息循环,不断从MessageQueue的实例中读取消息，如没有消息，则处于阻塞状态.有消息则回调msg.target.dispatchMessage(msg)方法.
-3.当Handle创建时，会获得当前线程相关的Looper对象，进行MessageQueue关联.
-4A.当通过Handle发送消息时，就会将msg的target赋值为handler自身,然后加入到MessageQueue中.
-4B.Post也是发送一个消息,msg的callBack赋值为Runnable.4
-5.接下来就回到了2的流程.
-
-
-属性动画原理:
-ValueAnimator.ofInt()/float/object - 插值器(当前动画数值进度fraction) - 估值器(返回具体数值) - 回调onAnimationUpdate
-ObjectAnimator.ofInt()/float/object - 插值器(当前动画数值进度fraction) - 估值器(返回具体数值) - 拼接set+PropertyName反射回调set方法.
-PropertyValuesHolder同一控件可以实现多个动画的播放.
-Keyframe实现每一帧的速率,至少要设置两帧.
-playTogether和playSequentially只负责定时激活控件动画.
-当AnimatorSet所拥有的函数与单个动画所拥有的函数冲突时，就以AnimatorSet设置为准。但唯一的例外就是setStartDelay。
-仅针对性的延长AnimatorSet的激活时间
-AnimatorSet真正激活延时 = AnimatorSet.startDelay+第一个动画.startDelay
-
 
 
 项目:
@@ -184,53 +42,3 @@ AnimatorSet真正激活延时 = AnimatorSet.startDelay+第一个动画.startDela
 考勤模块-drawText
 云办公模块-初始化两个recyclerView-绑定ItemTouchHelpr-设置拖动和侧滑
 环信模块-
-
-设计模式:
-单例模式:饿汉式、懒汉式、双重验证式、内部类式、枚举式.
-观察者模式:一对多的关系,当一个对象发生改变时,其他所有依赖者都得到相应通知.
-装饰者模式：扩展功能类.
-工厂模式:静态工厂、简单工厂、工厂方法(创建一个创建对象的接口把类实例化的过程推迟到子类)、抽象工厂(用于创建相关的或依赖对象的家族，而不需要明确指定具体类)
-适配器模式：让两个互不兼容的接口能正常对接.
-
-
-RXJAVA:
-一.初识Observable/Observer:
-onComplete和onError必须唯一并且互斥.(上游之后的事件将继续发送, 而下游之后将不再继续接收事件.)
-Disposable
-
-二.Schedulers线程切换:
-subscribeOn 
-切换上游所在线程,多次切换以第一次为准.
-observeOn
-切换下游所在线程,可以多次切换.
-
-三.操作符:
-变换 (位于离它实现最近的线程中)
-Map 
-一对一的变换
-FlatMap 
-一对多的变换(一个Observable转换为多个Observables,所有事件封装成另一个Observable)
-Zip 
-多个Observable组合后按顺序发送,(它只发射与发射数据项最少的那个Observable一样多的数据)
-filter 
-过滤事件 
-sample 
-每隔指定的时间就从上游中取出任意一个事件发送给下游. 
-interval
-发送Long型的事件,从0开始,每隔指定的时间就把数字加1并发送出来.
-
-五.背压Backpressure.
-同步订阅:当上游没发送一个事件,下游接收处理完后,才能接着发送下一个事件.
-反之异步订阅无需等待接收处理.                         
-传统解决方式:
-一.是从数量上进行治理, 减少发送进水缸里的事件
-二.是从速度上进行治理, 减缓事件发送进水缸的速度
-
-六.初识Flowable/Subscriber:
-Subscription对比Dispose.
-Subscription 多了一个request(Long g)方法,用于指定下游能处理事件的能力.
-BackpressureStrategy.ERR 超过处理能力直接抛异常.
-.BUFFER 无限大,会报OOM.
-.Drop 直接把存不下的事件丢弃.
-.Latest 只保留最新的事件.
-
