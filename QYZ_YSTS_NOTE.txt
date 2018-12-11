@@ -36,9 +36,11 @@ AsyncTask的原理解析:
 3.mworker中call()-postResult(doInBackground(PARAMES))-handler发送消息-回调OnCancel或者OnPostExecute().
 
 
+
 项目:
 支付模块
 推荐模块-根据屏幕参数初始化滚动线scrool_image-onPageScrolled参数设置动画
 考勤模块-drawText
 云办公模块-初始化两个recyclerView-绑定ItemTouchHelpr-设置拖动和侧滑
 环信模块-
+
