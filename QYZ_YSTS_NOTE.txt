@@ -30,12 +30,6 @@ add这条请求会先被加入到缓存队列当中，如果发现可以找到�
 如果在缓存中没有找到结果，则将这条请求加入到网络请求队列中，然后处理发送HTTP请求，解析响应结果，写入缓存，并回调主线程。
 
 
-AsyncTask的原理解析:
-1.execute()-初始化mWorker和mFuture。
-2.两个线程池,一个SerialExecutor任务队列的排列，一个THREAD_POLL_EXTCUTOR真正执行任务.
-3.mworker中call()-postResult(doInBackground(PARAMES))-handler发送消息-回调OnCancel或者OnPostExecute().
-
-
 
 项目:
 支付模块
